@@ -11,7 +11,7 @@ struct table_type {
   int num_rows;
 };
 
-const void terminate(const char *message)
+static void terminate (const char *message)
 {
     printf("%s\n", message);
     exit(EXIT_FAILURE);
