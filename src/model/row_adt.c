@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COLUMN_WIDTH_DISPLAY 12
-
 struct row_type {
   char **values;
   int num_fields;
@@ -16,8 +14,15 @@ static void terminate(const char * message)
   exit(EXIT_FAILURE);
 }
 
-Row create_row(const char **values, int num_fields)
+Row create_row(const char **values)
 {
+  int num_fields = 0;
+  const char **ptr_c = values;
+  while(*ptr_c){
+      ptr_c++;
+      num_fields++;
+  }
+
   Row r = malloc(sizeof(struct row_type));
   if ( r == NULL )
     terminate("Error in create_row : Row could not be created.");
@@ -36,22 +41,23 @@ Row create_row(const char **values, int num_fields)
   }
 
   r->num_fields = num_fields;
-  
   return r;
 }
 
-void free_row(Row item)
+void free_row(Row row)
 {
-  free(item->values);
-  free(item);
+  for(int i = 0; i < row->num_fields; i++) {
+      free(row->values[i]);
+  }
+  free(row->values);
+  free(row);
 }
 
-int print_row(Row item)
+int print_row(const Row row)
 {
   int values_printed = 0;
-  for (int i = 0 ; i < item->num_fields; i++) {
-    printf("%-*s|",COLUMN_WIDTH_DISPLAY, item->values[i]);
-    values_printed++;
+  for (int i = 0 ; i < row->num_fields; i++) {
+    printf("%-*s|",COLUMN_WIDTH_DISPLAY, row->values[i]);    values_printed++;
   }
   printf("\n");
   return values_printed;
