@@ -32,12 +32,15 @@ bool test_table_adt() {
     Row week2 = create_row(values2);
     const char *values3[] = {"4", "70", "149", "7896", "1", "69", "123789", NULL};
     Row week3 =  create_row(values3);
+    const char *values4[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", NULL}; //testing if the values is bigger than fields number
+    Row week4 = create_row(values4);
 
     bool result1 = add_row(table, week1);
     bool result2 = add_row(table, week2);
     bool result3 = add_row(table, week3);
+    bool result4 = add_row(table, week4);
 
-    if (result1 && result2)
+    if (result1 && result2 && result3 && result4)
         printf("The add_row function works fine\n");
 
     printf("\n\tThe length of the table is : %d\n\n", get_table_num_fields(table));

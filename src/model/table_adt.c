@@ -66,8 +66,10 @@ PUBLIC Table create_table(const char *name, const char **field_names)
 PUBLIC bool add_row(Table table, const Row row)
 {
     const int row_num_fields = get_row_num_fields(row);
-    if (  row_num_fields != table->num_fields)
-        terminate("error in add_row : Row and Table fields doesn't contain the same number of fields");
+    if (  row_num_fields != table->num_fields) {
+         printf("Error in add_row : Row and Table fields don't contain the same number of fields (Rows : %d, Table: %d)", row_num_fields, table->num_fields);
+         terminate("");
+    }
 
     table->rows = realloc(table->rows, (table->num_rows + 1) * sizeof(Row));
     if (table->rows == NULL)
