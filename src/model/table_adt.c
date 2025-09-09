@@ -67,7 +67,7 @@ PUBLIC bool add_row(Table table, const Row row)
 {
     const int row_num_fields = get_row_num_fields(row);
     if (  row_num_fields != table->num_fields) {
-         printf("Error in add_row : Row and Table fields don't contain the same number of fields (Rows : %d, Table: %d)", row_num_fields, table->num_fields);
+         printf("Error in add_row : Row and Table fields don't contain the same number of fields ( Rows : %d, Table: %d )", row_num_fields, table->num_fields);
          terminate("");
     }
 
