@@ -12,6 +12,8 @@ typedef struct row_type *Row;
 Row create_row(const char **values);
     //print a row and return numbers of printed values
 int print_row(const Row r);
+    //get the numbers of field for a row
+int get_row_num_fields(const Row row);
     //free a row
 void free_row(Row r);
 

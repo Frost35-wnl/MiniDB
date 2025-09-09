@@ -3,18 +3,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(PUBLIC) && !defined(PRIVATE)
+#define PUBLIC
+#define PRIVATE static
+#endif
+
 struct row_type {
   char **values;
   int num_fields;
 };
 
-static void terminate(const char * message)
+PRIVATE void terminate(const char * message)
 {
   printf("%s\n", message);
   exit(EXIT_FAILURE);
 }
 
-Row create_row(const char **values)
+PUBLIC Row create_row(const char **values)
 {
   int num_fields = 0;
   const char **ptr_c = values;
@@ -44,7 +49,7 @@ Row create_row(const char **values)
   return r;
 }
 
-void free_row(Row row)
+PUBLIC void free_row(Row row)
 {
   for(int i = 0; i < row->num_fields; i++) {
       free(row->values[i]);
@@ -53,7 +58,7 @@ void free_row(Row row)
   free(row);
 }
 
-int print_row(const Row row)
+PUBLIC int print_row(const Row row)
 {
   int values_printed = 0;
   for (int i = 0 ; i < row->num_fields; i++) {
@@ -61,4 +66,9 @@ int print_row(const Row row)
   }
   printf("\n");
   return values_printed;
+}
+
+PUBLIC int get_row_num_fields(const Row row)
+{
+    return row->num_fields;
 }

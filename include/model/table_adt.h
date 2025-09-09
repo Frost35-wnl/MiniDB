@@ -19,6 +19,6 @@ void free_table(Table table);
     //print table and return number of rows printed
 int print_table(const Table table);
     //return number of rows
-int get_table_length(const Table table);
+int get_table_num_fields(const Table table);
 
 #endif // !TABLE_ADT_H
