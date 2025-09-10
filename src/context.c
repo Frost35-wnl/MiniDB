@@ -7,7 +7,7 @@
 #define PUBLIC
 #define PRIVATE static
 
-#endif /* ifndef */ 
+#endif /* ifndef */
 
 struct context_type {
   Table current_table;
