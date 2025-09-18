@@ -1,5 +1,6 @@
 #ifndef ROW_ADT_H
 #define ROW_ADT_H
+#include "../config.h"
 
 #ifndef COLUMN_WIDTH_DISPLAY
     //Define the minimum width of each value to be displaied

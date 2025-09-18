@@ -2,6 +2,7 @@
 #define TABLE_ADT_H
 #include <stdbool.h>
 #include "./row_adt.h"
+#include "../config.h"
 
 #ifndef COLUMN_WIDTH_DISPLAY
     //Define the minimum width of each value to be displaied
