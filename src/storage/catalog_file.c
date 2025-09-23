@@ -1,35 +1,35 @@
+#include "../../include/storage/catalog_file.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <string.h>
-#include "../../include/storage/catalog_file.h"
 
 #define PUBLIC
-#define PRIVATE static 
+#define PRIVATE static
 
 PRIVATE void terminate(char *message) {
   fprintf(stderr, "%s\n", message);
   exit(EXIT_FAILURE);
 }
 
-PUBLIC bool table_exists(const char *table_name){
- 
+PUBLIC bool is_table_exists(const char *table_name) {
+
   bool table_exists = false;
 
-  FILE* ctlg = fopen(DATA_DIR"meta/catalog.meta", "r+");
+  FILE *ctlg = fopen(ROOT_DIR "/data/meta/catalog.meta", "r+");
   if (ctlg == NULL) {
-    fprintf(stderr, "Error in table_exists : can't open catalog file");
+    fprintf(stderr, "Error in is_table_exists : can't open catalog file");
     return false;
   }
 
   char buffer[TABLE_NAME_WIDTH];
   while (fgets(buffer, sizeof(buffer), ctlg) != NULL) {
 
-      if (strstr(buffer, table_name) != NULL) {
-        table_exists = true; 
-        break;
-      }
+    if (strstr(buffer, table_name) != NULL) {
+      table_exists = true;
+      break;
+    }
   }
 
   fclose(ctlg);
@@ -37,19 +37,19 @@ PUBLIC bool table_exists(const char *table_name){
 } /*O(n)*/
 
 PUBLIC bool add_table_to_catalog(const char *table_name) {
- 
-  #if defined(DEBUG) && DEBUG == 1
-     printf("%scatalog.meta\n", DATA_DIR); 
-  #endif
-  
-  create_path(DATA_DIR, "meta");
-  
-  FILE* ctlg = fopen(DATA_DIR"/meta/catalog.meta", "a+");
+#if defined(DEBUG) && DEBUG == 1
+  printf("Debug : %scatalog.meta\n", ROOT_DIR "data/");
+#endif
+
+  create_directory(ROOT_DIR, "data");
+  create_directory(ROOT_DIR "/data/", "meta");
+
+  FILE *ctlg = fopen(ROOT_DIR "/data/meta/catalog.meta", "a+");
   if (ctlg == NULL) {
     terminate("Error in add_table_to_catalog : can't open catalog file");
   }
 
-  if(table_exists(table_name)) {
+  if (is_table_exists(table_name)) {
     printf("%s is already in the catalog\n", table_name);
     fclose(ctlg);
     return false;
@@ -63,7 +63,7 @@ PUBLIC bool add_table_to_catalog(const char *table_name) {
 PUBLIC int list_tables() {
 
   int table_num = 0;
-  FILE* ctlg = fopen(DATA_DIR"/meta/catalog.meta", "r");
+  FILE *ctlg = fopen(ROOT_DIR "/data/meta/catalog.meta", "r");
   if (ctlg == NULL) {
     terminate("Erro in list_tables : can't open catalog file");
   }
@@ -72,13 +72,12 @@ PUBLIC int list_tables() {
   size_t len = 0;
   size_t read;
 
-  while((read = getline(&line, &len, ctlg)) != -1) {
-    printf("%s",line);
+  while ((read = getline(&line, &len, ctlg)) != -1) {
+    printf("%s", line);
     table_num++;
   }
 
   free(line);
   fclose(ctlg);
   return table_num;
-}/*O(n)*/
-
+} /*O(n)*/

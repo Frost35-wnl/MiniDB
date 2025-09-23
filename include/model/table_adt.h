@@ -19,7 +19,11 @@ bool add_row(Table table, const Row row);
 void free_table(Table table);
     //print table and return number of rows printed
 int print_table(const Table table);
-    //return number of rows
-int get_table_num_fields(const Table table);
+    //return the name of the table
+const char* get_table_name(const Table table);
+    //return number of rows;
+int get_table_fields_num(const Table table);
+    //return a string of the fields (need to be freed after use)
+char* get_table_fields_str(const Table table);
 
 #endif // !TABLE_ADT_H
