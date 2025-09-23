@@ -13,25 +13,23 @@ struct row_type {
   int num_fields;
 };
 
-PRIVATE void terminate(const char * message)
-{
+PRIVATE void terminate(const char *message) {
   printf("%s\n", message);
   exit(EXIT_FAILURE);
 }
 
-PUBLIC Row create_row(const char **values)
-{
+PUBLIC Row create_row(const char **values) {
   int num_fields = 0;
   const char **ptr_c = values;
-  while(*ptr_c){
-      ptr_c++;
-      num_fields++;
+  while (*ptr_c) {
+    ptr_c++;
+    num_fields++;
   }
 
   Row r = malloc(sizeof(struct row_type));
-  if ( r == NULL )
+  if (r == NULL)
     terminate("Error in create_row : Row could not be created.");
-  r->values = malloc(num_fields * sizeof(char*));
+  r->values = malloc(num_fields * sizeof(char *));
   if (r->values == NULL) {
     free(r);
     terminate("Error in create_row : Row could not be created.");
@@ -49,26 +47,22 @@ PUBLIC Row create_row(const char **values)
   return r;
 }
 
-PUBLIC void free_row(Row row)
-{
-  for(int i = 0; i < row->num_fields; i++) {
-      free(row->values[i]);
+PUBLIC void free_row(Row row) {
+  for (int i = 0; i < row->num_fields; i++) {
+    free(row->values[i]);
   }
   free(row->values);
   free(row);
 }
 
-PUBLIC int print_row(const Row row)
-{
+PUBLIC int print_row(const Row row) {
   int values_printed = 0;
-  for (int i = 0 ; i < row->num_fields; i++) {
-    printf("%-*s|",COLUMN_WIDTH_DISPLAY, row->values[i]);    values_printed++;
+  for (int i = 0; i < row->num_fields; i++) {
+    printf("%-*s", COLUMN_WIDTH_DISPLAY, row->values[i]);
+    values_printed++;
   }
   printf("\n");
   return values_printed;
 }
 
-PUBLIC int get_row_num_fields(const Row row)
-{
-    return row->num_fields;
-}
+PUBLIC int get_row_num_fields(const Row row) { return row->num_fields; }
