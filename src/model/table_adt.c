@@ -143,7 +143,7 @@ PUBLIC char *get_table_fields_str(const Table table) {
   strcpy(table_fields_str, table->field_names[0]);
 
 #if defined(DEBUG) && DEBUG == 1
-  printf("%s\n", table_fields_str);
+  printf("Debug : %s\n", table_fields_str);
 #endif
 
   for (int i = 1; i < table_field_num; i++) {
