@@ -6,14 +6,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bool catalog_test();
+bool catalog_meta_test();
+bool db_test();
 
 int main(void) {
-  if (catalog_test())
+  if (catalog_meta_test())
     printf("Catalog runs out of the box");
+  if (db_test())
+    printf("Db runs out of the box");
 }
 
-bool catalog_test() {
+bool db_test() { return false; }
+
+bool catalog_meta_test() {
 
   // DBContext
   DBContext ctx = init_context();
@@ -69,7 +74,7 @@ bool catalog_test() {
     Table tmp = get_current_table(ctx);
 
     print_table(tmp);
-    printf("The %s is loaded from meta", get_table_name(tmp));
+    printf("The %s is loaded from meta\n", get_table_name(tmp));
   }
 
   printf("\n\n");
@@ -79,7 +84,7 @@ bool catalog_test() {
     Table tmp2 = get_current_table(ctx);
 
     print_table(tmp2);
-    printf("The %s is loaded from meta", get_table_name(tmp2));
+    printf("The %s is loaded from meta\n", get_table_name(tmp2));
   }
 
   printf("\n\n");
@@ -89,8 +94,17 @@ bool catalog_test() {
     Table tmp3 = get_current_table(ctx);
 
     print_table(tmp3);
-    printf("The %s is loaded from meta", get_table_name(tmp3));
+    printf("The %s is loaded from meta\n", get_table_name(tmp3));
   }
+
+  // delete table1
+  remove_table_from_catalog(table1_name);
+  clear_table_meta(table1_name);
+
+  // if the ctx is the table that we want to delete we must free the context
+  // then delete from catalog and clear table meta
+
+  list_tables();
 
   printf("Test successfull\n");
 

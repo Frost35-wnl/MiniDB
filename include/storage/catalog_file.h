@@ -10,5 +10,7 @@ bool add_table_to_catalog(const char *table_name);
 int list_tables();
 // Check if table is already in catalog
 bool is_table_exists(const char *table_name);
+// To remove table form catalog
+void remove_table_from_catalog(const char *table_name);
 
 #endif // !CATALOG_H

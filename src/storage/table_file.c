@@ -52,8 +52,10 @@ PUBLIC bool write_table_meta(Table t) {
 
   char *table_meta_path = get_table_meta_path(table_name);
 
-  if (is_table_meta_exists(table_name))
-    terminate("Error in write_table_meta : this table meta already exists");
+  if (is_table_meta_exists(table_name)) {
+    fprintf(stderr, "Error in write_table_meta : this table already exists");
+    return false;
+  }
 
   FILE *table_meta_file = fopen(table_meta_path, "w");
   if (table_meta_file == NULL) {
@@ -147,4 +149,16 @@ PUBLIC Table read_table_meta(const char *table_name) {
   Table table = create_table(table_name, (const char **)fields_name);
   free(fields_name);
   return table;
+}
+
+PUBLIC void clear_table_meta(const char *table_name) {
+
+  if (!is_table_meta_exists(table_name))
+    terminate("Error in clear_table_meta : this table doesn't exist");
+
+  char *table_meta_path = get_table_meta_path(table_name);
+  if (remove(table_meta_path) == 0)
+    printf("File %s successfully deleted. \n", table_meta_path);
+  else
+    terminate("Error in clear_table_meta : can't delete file");
 }

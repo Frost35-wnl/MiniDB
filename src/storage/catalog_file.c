@@ -34,7 +34,7 @@ PUBLIC bool is_table_exists(const char *table_name) {
 
   fclose(ctlg);
   return table_exists;
-} /*O(n)*/
+}
 
 PUBLIC bool add_table_to_catalog(const char *table_name) {
 #if defined(DEBUG) && DEBUG == 1
@@ -58,7 +58,16 @@ PUBLIC bool add_table_to_catalog(const char *table_name) {
   fprintf(ctlg, "%s\n", table_name);
   fclose(ctlg);
   return true;
-} /*O(n)*/
+}
+
+PUBLIC void remove_table_from_catalog(const char *table_name) {
+
+  if (!is_table_exists(table_name)) {
+    terminate("Erro in remove_table_from_catalog : this table doesn't exist");
+  }
+
+  delete_file_line(ROOT_DIR "/data/meta/", "catalog.meta", table_name);
+}
 
 PUBLIC int list_tables() {
 
@@ -80,4 +89,4 @@ PUBLIC int list_tables() {
   free(line);
   fclose(ctlg);
   return table_num;
-} /*O(n)*/
+}
