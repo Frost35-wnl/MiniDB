@@ -13,8 +13,8 @@ struct table_type {
   char *name;
   char **field_names;
   Row *rows;
-  int num_fields;
-  int num_rows;
+  int fields_count;
+  int rows_count;
 };
 
 PRIVATE void terminate(const char *message) {
@@ -59,12 +59,12 @@ PUBLIC Table create_table(const char *name, const char **field_names) {
     field_index++;
   }
 
-  t->num_fields = field_index;
-  t->num_rows = 0;
-  t->rows = malloc(t->num_rows * sizeof(Row));
+  t->fields_count = field_index;
+  t->rows_count = 0;
+  t->rows = malloc(t->rows_count * sizeof(Row));
   if (t->rows == NULL) {
     free(t->name);
-    for (int i = 0; i < t->num_fields; i++) {
+    for (int i = 0; i < t->fields_count; i++) {
       free(t->field_names[i]);
     }
     free(t);
@@ -74,30 +74,30 @@ PUBLIC Table create_table(const char *name, const char **field_names) {
 }
 
 PUBLIC bool add_row(Table table, const Row row) {
-  const int row_num_fields = get_row_num_fields(row);
-  if (row_num_fields != table->num_fields) {
+  const int row_num_fields = get_row_fields_count(row);
+  if (row_num_fields != table->fields_count) {
     printf("Error in add_row : Row and Table fields don't contain the same "
            "number of fields (Rows : %d, Table: %d)",
-           row_num_fields, table->num_fields);
+           row_num_fields, table->fields_count);
     terminate("");
   }
 
-  table->rows = realloc(table->rows, (table->num_rows + 1) * sizeof(Row));
+  table->rows = realloc(table->rows, (table->rows_count + 1) * sizeof(Row));
   if (table->rows == NULL)
     terminate("Error in add_row : Row element couldn't be added to the Table");
-  table->rows[table->num_rows] = row;
-  table->num_rows++;
+  table->rows[table->rows_count] = row;
+  table->rows_count++;
 
   return true;
 }
 
 PUBLIC void free_table(Table table) {
   free(table->name);
-  for (int i = 0; i < table->num_fields; i++) {
+  for (int i = 0; i < table->fields_count; i++) {
     free(table->field_names[i]);
   }
   free(table->field_names);
-  for (int i = 0; i < table->num_rows; i++) {
+  for (int i = 0; i < table->rows_count; i++) {
     free_row(table->rows[i]);
   }
   free(table->rows);
@@ -107,31 +107,45 @@ PUBLIC void free_table(Table table) {
 PUBLIC int print_table(const Table table) {
   printf("%s\n", table->name);
   int values_printed = 0;
-  for (int i = 0; i < table->num_fields; i++) {
+  for (int i = 0; i < table->fields_count; i++) {
     printf("%-*s", COLUMN_WIDTH_DISPLAY, table->field_names[i]);
   }
   printf("\n");
-  for (int i = 0; i < table->num_rows; i++) {
+  for (int i = 0; i < table->rows_count; i++) {
     print_row(table->rows[i]);
     values_printed++;
   }
   return values_printed;
 }
 
-PUBLIC const char *get_table_name(const Table table) { return table->name; }
+PUBLIC char *get_table_name(const Table table) {
+  if (!table || !table->name)
+    return NULL;
 
-PUBLIC int get_table_fields_num(const Table table) { return table->num_fields; }
+  char *table_name = malloc(strlen(table->name) + 1);
+  if (!table_name) {
+    fprintf(stderr, "Error in get_table_name : memory allocation failed\n");
+    return NULL;
+  }
+
+  strcpy(table_name, table->name);
+  return table_name;
+}
+
+PUBLIC int get_table_fields_count(const Table table) {
+  return table->fields_count;
+}
 
 PUBLIC char *get_table_fields_str(const Table table) {
   if (!table || !table->field_names)
     terminate(
-        "Error in get_table_fields_str : table or table fields doesn't exist");
+        "Error in get_table_fields_str : table or table fields don't exist");
 
-  const int table_field_num = get_table_fields_num(table);
+  const int table_field_num = get_table_fields_count(table);
   if (table_field_num == 0) {
     char *empty = malloc(1);
     if (empty == NULL)
-      terminate("Error in get_table_fields_str : malloc faild");
+      terminate("Error in get_table_fields_str : malloc failed");
     empty[0] = '\0';
     return empty;
   }

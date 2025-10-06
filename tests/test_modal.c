@@ -46,7 +46,7 @@ bool test_table_adt() {
     printf("The add_row function works fine\n");
 
   printf("\n\tThe length of the table is : %d\n\n",
-         get_table_fields_num(table));
+         get_table_fields_count(table));
 
   print_table(table);
   free_table(table);

@@ -13,7 +13,7 @@ PRIVATE void terminate(char *message) {
   exit(EXIT_FAILURE);
 }
 
-PUBLIC bool is_table_exists(const char *table_name) {
+PUBLIC bool does_table_exist(const char *table_name) {
 
   bool table_exists = false;
 
@@ -49,7 +49,7 @@ PUBLIC bool add_table_to_catalog(const char *table_name) {
     terminate("Error in add_table_to_catalog : can't open catalog file");
   }
 
-  if (is_table_exists(table_name)) {
+  if (does_table_exist(table_name)) {
     printf("%s is already in the catalog\n", table_name);
     fclose(ctlg);
     return false;
@@ -62,7 +62,7 @@ PUBLIC bool add_table_to_catalog(const char *table_name) {
 
 PUBLIC void remove_table_from_catalog(const char *table_name) {
 
-  if (!is_table_exists(table_name)) {
+  if (!does_table_exist(table_name)) {
     terminate("Erro in remove_table_from_catalog : this table doesn't exist");
   }
 
