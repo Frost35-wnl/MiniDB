@@ -80,3 +80,15 @@ PUBLIC void delete_file_line(char *file_parent_directory, const char *file_name,
     return;
   }
 }
+
+PUBLIC void trim_newline(char *s) {
+  if (!s)
+    return;
+
+  size_t len = strlen(s);
+  while (len > 0 &&
+         (s[len - 1] == '\n' || s[len - 1] == '\r' || s[len - 1] == ' ')) {
+    s[len - 1] = '\0';
+    len--;
+  }
+}

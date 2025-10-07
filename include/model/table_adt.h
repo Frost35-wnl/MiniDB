@@ -3,6 +3,7 @@
 #include "../config.h"
 #include "./row_adt.h"
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifndef COLUMN_WIDTH_DISPLAY
 // Define the minimum width of each value to be displaied
@@ -25,5 +26,9 @@ char *get_table_name(const Table table);
 int get_table_fields_count(const Table table);
 // return a string of the fields (need to be freed after use)
 char *get_table_fields_str(const Table table);
+// return row_count
+int get_table_row_count(const Table table);
+// return Row at a given index
+Row get_row_at(const Table table, size_t index);
 
 #endif // !TABLE_ADT_H

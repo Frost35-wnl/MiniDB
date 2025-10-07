@@ -25,8 +25,8 @@ PUBLIC bool does_table_exist(const char *table_name) {
 
   char buffer[TABLE_NAME_WIDTH];
   while (fgets(buffer, sizeof(buffer), ctlg) != NULL) {
-
-    if (strstr(buffer, table_name) != NULL) {
+    trim_newline(buffer);
+    if (strcmp(buffer, table_name) == 0) {
       table_exists = true;
       break;
     }
@@ -82,7 +82,8 @@ PUBLIC int list_tables() {
   size_t read;
 
   while ((read = getline(&line, &len, ctlg)) != -1) {
-    printf("%s", line);
+    trim_newline(line);
+    printf("%s\n", line);
     table_num++;
   }
 

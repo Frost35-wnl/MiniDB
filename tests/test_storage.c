@@ -8,12 +8,59 @@
 
 bool catalog_test();
 bool meta_test();
+bool data_test();
 
 int main(void) {
-  // if (catalog_test())
-  // printf("Catalog runs out of the box \n\n");
+  if (catalog_test())
+    printf("Catalog runs out of the box \n\n");
   if (meta_test())
-    printf("meta runs out of the box");
+    printf("meta runs out of the box\n\n");
+  if (data_test())
+    printf("data runs out of the box\n\n");
+
+  return 0;
+}
+
+bool data_test() {
+  DBContext ctx = init_context();
+
+  const char table1_name[] = "TABLE1";
+  const char table2_name[] = "TABLE2";
+  const char table3_name[] = "TABLE3";
+
+  const char *table1_fields[] = {"Number", "Freq", "Total", NULL};
+  const char *table2_fields[] = {"True", "False", NULL};
+  const char *table3_fields[] = {"Jan", "Feb",  "Mar", "Ap",  "Jun", "Jul",
+                                 "Aug", "Sept", "Oct", "Nov", "Dec", NULL};
+
+  Table table1 = create_table(table1_name, table1_fields);
+  Table table2 = create_table(table2_name, table2_fields);
+  Table table3 = create_table(table3_name, table3_fields);
+
+  create_table_data(table1);
+  create_table_data(table2);
+  create_table_data(table3);
+
+  free_table(table1);
+  free_table(table2);
+  free_table(table3);
+
+  // We load table from files
+  Table tmp = load_table(table1_name);
+  set_current_table(ctx, tmp);
+
+  const char *values1[] = {"0", "0", "0", NULL};
+  const char *values2[] = {"1", "1", "1", NULL};
+  Row r1 = create_row(values1);
+  Row r2 = create_row(values2);
+
+  add_row(get_current_table(ctx), r1);
+  add_row(get_current_table(ctx), r2);
+
+  print_table(get_current_table(ctx));
+  save_table(get_current_table(ctx));
+
+  return true;
 }
 
 bool meta_test() {
@@ -96,9 +143,9 @@ bool catalog_test() {
   }
 
   // delete table1
-  remove_table_from_catalog(table1_name);
-  remove_table_from_catalog(table2_name);
-  remove_table_from_catalog(table3_name);
+  // remove_table_from_catalog(table1_name);
+  // remove_table_from_catalog(table2_name);
+  // remove_table_from_catalog(table3_name);
   list_tables();
 
   printf("Test successfull\n");

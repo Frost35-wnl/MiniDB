@@ -1,5 +1,6 @@
 #include "../../include/model/table_adt.h"
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -174,4 +175,10 @@ PUBLIC char *get_table_fields_str(const Table table) {
   }
 
   return table_fields_str;
+}
+
+PUBLIC int get_table_row_count(const Table table) { return table->rows_count; }
+
+PUBLIC Row get_row_at(const Table table, size_t index) {
+  return table->rows[index];
 }

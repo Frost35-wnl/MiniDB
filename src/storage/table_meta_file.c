@@ -1,5 +1,4 @@
 #include "../../include/storage/table_meta_file.h"
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +26,7 @@ PRIVATE char *get_table_meta_path(const char *table_name) {
   return table_meta_path;
 }
 
-PRIVATE bool does_table_meta_exist(const char *table_name) {
+PUBLIC bool does_table_meta_exist(const char *table_name) {
 
   char *table_meta_path = get_table_meta_path(table_name);
   FILE *table_meta_file = fopen(table_meta_path, "r");
@@ -64,7 +63,8 @@ PUBLIC bool create_table_meta(Table t) {
     free(table_name);
     free(table_fields_str);
     free(table_meta_path);
-    fprintf(stderr, "Error in create_table_meta : this table already exists\n");
+    fprintf(stderr,
+            "Error in create_table_meta : this table meta already exists\n");
     return false;
   }
 
@@ -103,67 +103,44 @@ PUBLIC Table read_table_meta(const char *table_name) {
     terminate("Erro in read_table_meta : can't open table meta file\n");
   }
 
-  int fields_num = 0;
-  char *fields_name_str = NULL;
-  char **fields_name = NULL;
-
-  int ch;
-  while ((ch = getc(table_meta_file)) != EOF) {
-    char ch_str[2];
-    ch_str[0] = (char)ch;
-    ch_str[1] = '\0';
-
-    if (fields_name_str == NULL) {
-      fields_name_str = malloc(2);
-      if (fields_name_str == NULL)
-        terminate("Error in read_table_meta : can't get fields name");
-
-      strcpy(fields_name_str, ch_str);
-      continue;
-    }
-    if (!strcmp(ch_str, ",")) {
-      fields_name = realloc(fields_name, (fields_num + 1) * sizeof(char *));
-      if (fields_name == NULL)
-        terminate("Error in read_table_meta : realloc failed");
-
-      fields_name[fields_num] = strdup(fields_name_str);
-      if (fields_name[fields_num] == NULL)
-        terminate("Error in read_table_meta : strdup failed");
-
-      free(fields_name_str);
-      fields_name_str = NULL;
-      fields_num++;
-      continue;
-    }
-
-    fields_name_str = realloc(fields_name_str, strlen(fields_name_str) + 2);
-    if (fields_name_str == NULL)
-      terminate("Error in read_table_meta : realloc failed");
-    strcat(fields_name_str, ch_str);
+  char buffer[MAX_BUFF];
+  if (!fgets(buffer, sizeof(buffer), table_meta_file)) {
+    free(table_meta_path);
+    terminate("Error in read_table_meta : failed to read meta line");
   }
 
-  if (fields_name_str != NULL) {
-    fields_name = realloc(fields_name, (fields_num + 1) * sizeof(char *));
+  trim_newline(buffer);
+
+  int fields_count = 0;
+  char **fields_name = NULL;
+
+  char *token = strtok(buffer, ",");
+  while (token != NULL) {
+    trim_newline(token);
+
+    fields_name = realloc(fields_name, sizeof(char *) * (fields_count + 1));
     if (fields_name == NULL)
       terminate("Error in read_table_meta : realloc failed");
 
-    fields_name[fields_num] = strdup(fields_name_str);
-    if (fields_name[fields_num] == NULL)
+    fields_name[fields_count] = strdup(token);
+    if (fields_name[fields_count] == NULL)
       terminate("Error in read_table_meta : strdup failed");
 
-    free(fields_name_str);
-    fields_num++;
+    fields_count++;
+    token = strtok(NULL, ",");
   }
 
-  fields_name = realloc(fields_name, (fields_num + 1) * sizeof(char *));
+  fields_name = realloc(fields_name, (fields_count + 1) * sizeof(char *));
   if (fields_name == NULL)
     terminate("Error in read_table_meta : realloc failed");
+  fields_name[fields_count] = NULL;
 
-  fields_name[fields_num] = NULL;
   free(table_meta_path);
   fclose(table_meta_file);
 
   Table table = create_table(table_name, (const char **)fields_name);
+  for (int i = 0; i < fields_count; i++)
+    free(fields_name[i]);
   free(fields_name);
   return table;
 }
@@ -178,4 +155,5 @@ PUBLIC void clear_table_meta(const char *table_name) {
     printf("File %s successfully deleted. \n", table_meta_path);
   else
     terminate("Error in clear_table_meta : can't delete file");
+  free(table_meta_path);
 }
