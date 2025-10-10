@@ -93,6 +93,9 @@ PUBLIC bool add_row(Table table, const Row row) {
 }
 
 PUBLIC void free_table(Table table) {
+  if (table == NULL)
+    return;
+
   free(table->name);
   for (int i = 0; i < table->fields_count; i++) {
     free(table->field_names[i]);

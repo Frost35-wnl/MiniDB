@@ -3,6 +3,6 @@
 #define INSERT_H
 #include "../context.h"
 
-void handle_list(DBContext ctx);
+void handle_insert(DBContext ctx, const char **values);
 
-#endif // !CREATE_H
+#endif //

@@ -40,11 +40,17 @@ PRIVATE int get_fields_count(const char **tokens) {
   return fields_count;
 }
 
+PRIVATE bool is_table_name_long(const char *table_name) {
+  return strlen(table_name) > TABLE_NAME_WIDTH;
+}
+
 // tokens = ["students", "id", "name", "note", null]
 PUBLIC void handle_create(DBContext ctx, const char **tokens) {
   const char *table_name = tokens[0];
-  int table_fields_count = get_fields_count(tokens);
+  if (is_table_name_long(table_name))
+    terminate("Error in handle_create : table name too long (MAX : 120) ");
 
+  int table_fields_count = get_fields_count(tokens);
   char **table_fields = malloc((table_fields_count + 1) * sizeof(char *));
   if (table_fields == NULL)
     terminate("Error in handle_create : malloc failed");

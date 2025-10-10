@@ -128,7 +128,7 @@ bool catalog_test() {
   add_table_to_catalog(table3_name);
 
   printf("\nList of the tables : \n");
-  list_tables();
+  list_catalog_tables();
   printf("\n");
 
   printf("Everything is freed\n");
@@ -146,7 +146,7 @@ bool catalog_test() {
   // remove_table_from_catalog(table1_name);
   // remove_table_from_catalog(table2_name);
   // remove_table_from_catalog(table3_name);
-  list_tables();
+  list_catalog_tables();
 
   printf("Test successfull\n");
 

@@ -69,12 +69,10 @@ PUBLIC void remove_table_from_catalog(const char *table_name) {
   delete_file_line(ROOT_DIR "/data/meta/", "catalog.meta", table_name);
 }
 
-PUBLIC int list_tables() {
-
-  int table_num = 0;
+PUBLIC void list_catalog_tables() {
   FILE *ctlg = fopen(ROOT_DIR "/data/meta/catalog.meta", "r");
   if (ctlg == NULL) {
-    terminate("Erro in list_tables : can't open catalog file");
+    terminate("Error in list_tables : can't open catalog file");
   }
 
   char *line = NULL;
@@ -84,10 +82,24 @@ PUBLIC int list_tables() {
   while ((read = getline(&line, &len, ctlg)) != -1) {
     trim_newline(line);
     printf("%s\n", line);
-    table_num++;
   }
 
   free(line);
   fclose(ctlg);
-  return table_num;
+}
+
+PUBLIC int get_table_count() {
+  int table_count = 0;
+  FILE *ctlg = fopen(ROOT_DIR "/data/meta/catalog.meta", "r");
+  if (ctlg == NULL) {
+    terminate("Error in list_tables : can't open catalog file");
+  }
+
+  for (char c = getc(ctlg); c != EOF; c = getc(ctlg)) {
+    if (c == '\n')
+      table_count++;
+  }
+
+  fclose(ctlg);
+  return table_count;
 }
