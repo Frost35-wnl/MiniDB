@@ -2,6 +2,6 @@
 #define CREATE_H
 #include "../context.h"
 
-void handle_create(DBContext ctx, char **tokens);
+void handle_create(DBContext ctx, const char **tokens);
 
 #endif // !CREATE_H

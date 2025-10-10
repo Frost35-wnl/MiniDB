@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <termios.h>
 #include <unistd.h>
 
 #define PUBLIC
@@ -91,4 +92,20 @@ PUBLIC void trim_newline(char *s) {
     s[len - 1] = '\0';
     len--;
   }
+}
+
+PUBLIC char getch() {
+  struct termios old, new;
+  char ch;
+
+  tcgetattr(STDIN_FILENO, &old);
+  new = old;
+
+  new.c_lflag &= ~(ICANON | ECHO);
+  tcsetattr(STDIN_FILENO, TCSANOW, &new);
+
+  read(STDIN_FILENO, &ch, 1);
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &old);
+  return ch;
 }

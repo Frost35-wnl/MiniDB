@@ -95,7 +95,8 @@ bool write_table_row(const char *table_name, const Row row) {
 Row *read_table_rows(const char *table_name, int *row_count) {
 
   if (!does_table_data_exist(table_name)) {
-    terminate("Error in read_table_rows : this table doesn't exist");
+    fprintf(stderr, "Error in read_table_rows : this table doesn't exist\n");
+    return NULL;
   }
 
 #if defined(DEBUG) && DEBUG == 1
