@@ -112,7 +112,7 @@ PUBLIC int print_table(const Table table) {
   printf("%s\n", table->name);
   int values_printed = 0;
   for (int i = 0; i < table->fields_count; i++) {
-    printf("%-*s", COLUMN_WIDTH_DISPLAY, table->field_names[i]);
+    printf("%-*s|", COLUMN_WIDTH_DISPLAY, table->field_names[i]);
   }
   printf("\n");
   for (int i = 0; i < table->rows_count; i++) {

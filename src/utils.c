@@ -1,6 +1,7 @@
 #include "../include/utils.h"
 #include <errno.h>
 #include <linux/limits.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -92,6 +93,23 @@ PUBLIC void trim_newline(char *s) {
     s[len - 1] = '\0';
     len--;
   }
+}
+
+PUBLIC char *read_line(void) {
+  char *line = NULL;
+  size_t len = 0;
+  ssize_t nread = getline(&line, &len, stdin);
+
+  if (nread == -1) {
+    free(line);
+    return NULL;
+  }
+
+  if (nread > 0 && line[nread - 1] == '\n') {
+    line[nread - 1] = '\0';
+  }
+
+  return line;
 }
 
 PUBLIC char getch() {

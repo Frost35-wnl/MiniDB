@@ -29,9 +29,9 @@ PRIVATE void switch_context(DBContext ctx, const char *table_name) {
   }
 }
 
-PRIVATE int get_fields_count(const char **tokens) {
+PRIVATE int get_fields_count(const char **args) {
   int fields_count = 0;
-  const char **ptr = tokens + 1;
+  const char **ptr = args + 1;
   while (*ptr) {
     fields_count++;
     ptr++;
@@ -45,17 +45,17 @@ PRIVATE bool is_table_name_long(const char *table_name) {
 }
 
 // tokens = ["students", "id", "name", "note", null]
-PUBLIC void handle_create(DBContext ctx, const char **tokens) {
-  const char *table_name = tokens[0];
+PUBLIC void handle_create(DBContext ctx, const char **args) {
+  const char *table_name = args[0];
   if (is_table_name_long(table_name))
     terminate("Error in handle_create : table name too long (MAX : 120) ");
 
-  int table_fields_count = get_fields_count(tokens);
+  int table_fields_count = get_fields_count(args);
   char **table_fields = malloc((table_fields_count + 1) * sizeof(char *));
   if (table_fields == NULL)
     terminate("Error in handle_create : malloc failed");
 
-  const char **ptr = tokens + 1;
+  const char **ptr = args + 1;
   for (int i = 0; i < table_fields_count; i++, ptr++) {
     table_fields[i] = malloc(strlen(*ptr) + 1);
     if (table_fields[i] == NULL)

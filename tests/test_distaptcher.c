@@ -1,4 +1,5 @@
 #include "../include/commands/dispatcher.h"
+#include "../include/config.h"
 #include "../include/parser/parser.h"
 #include "../include/parser/tokenizer.h"
 #include "../include/utils.h"
@@ -7,23 +8,22 @@
 
 int main() {
 
-  char *input;
+  char input[MAX_BUFF];
   DBContext ctx = init_context();
 
   printf(">> ");
   for (;;) {
-    input = read_line();
-    if (input) {
-      if (strcmp(input, "quit") == 0)
-        break;
+    read_line(input, MAX_BUFF);
 
-      ParesedCommand cmd = parse_tokens(tokenize(input));
-      dispatch_command(ctx, cmd);
+    if (strcmp(input, "quit") == 0)
+      break;
 
-      printf("\n");
-      free_parsed_command(cmd);
-      printf(">> ");
-    }
+    Tokens t = tokenize(input);
+    ParesedCommand cmd = parse_tokens(t);
+    dispatch_command(ctx, cmd);
+    printf("\n");
+    free_parsed_command(cmd);
+    printf(">> ");
   }
 
   free_context(ctx);
