@@ -68,12 +68,22 @@ PUBLIC Tokens tokenize(const char *input) {
   }
 
   t->tokens = realloc(t->tokens, sizeof(char *) * (t->tokens_count + 1));
+  if (t->tokens == NULL)
+    terminate("Error in tokenize : realloc failed");
+
   t->tokens[t->tokens_count] = NULL;
 
   return t;
 }
 
+PUBLIC int get_tokens_count(const Tokens t) { return t->tokens_count; }
+
+PUBLIC char **get_tokens_args(const Tokens t) { return t->tokens; }
+
 PUBLIC void print_tokens(const Tokens t) {
+  if (!t)
+    terminate("Error in print_tokens : tokens doesn't exist");
+
   fprintf(stdout, "[ ");
   for (size_t i = 0; i < t->tokens_count; i++) {
     fprintf(stdout, " \"%s\",", t->tokens[i]);
@@ -82,8 +92,12 @@ PUBLIC void print_tokens(const Tokens t) {
 }
 
 PUBLIC void free_tokens(Tokens t) {
+  if (!t)
+    return;
+
   for (size_t i = 0; i < t->tokens_count; i++) {
     free(t->tokens[i]);
   }
   free(t->tokens);
+  free(t);
 }
